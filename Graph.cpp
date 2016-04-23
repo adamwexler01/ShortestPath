@@ -3,15 +3,20 @@
 
 using namespace std;
 
+//Creating the Directed Graph Structure
+
 struct Vertex {
-
-
+	string value;
+	int *powers;							//Add the largest Subset in Increasing Order
 };
 
 struct Edge{
-
-
+	Vertex *source;
+	Vertex *destination;
+	int weight;
 };
+
+//Class structure of Graph
 
 class Graph{
 private:
