@@ -1,7 +1,7 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <set>
+#include <iostream>							//Definitely need
+#include <vector>							//Might use this lib, not entirely sure yet
+#include <string>							//Realms have string values, so this is needed
+#include <set>								//Used for finding the Increasing Order of Set
 
 using namespace std;
 
@@ -36,20 +36,20 @@ Graph::Graph(){
 }
 
 Graph::~Graph(){
-
+	//Destruct the Structure
 }
 
 void Graph::Dijkstras(){
-
+	//Implementing Dijkstras Algorithm
 }
 
-int main(int argc, char *argv[]){
+// int main(int argc, char *argv[]){
 
 
 
-	return 0;
+// 	return 0;
 
-}
+// }
 
 
 
