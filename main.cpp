@@ -29,7 +29,6 @@ int main(int argc, const char * argv[]) {
   
   // Read number of realms
   cin >> n;
-  string realms;
   
   for (int i = 0; i < n; i++) {
     string charm;
@@ -41,10 +40,14 @@ int main(int argc, const char * argv[]) {
     
     // Read power for each magi
     int magiPowers[magiCount];
-    
+
     for (int j = 0; j < magiCount; j++) {
       cin >> magiPowers[j];
     }
+
+    // Create graph and begin adding individual realms(vertices)
+    Graph* graph = new Graph(n);
+    graph->addRealm(i, charm, magiPowers);
   }
   
   // Read start and destination charms

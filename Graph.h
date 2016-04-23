@@ -1,7 +1,7 @@
-#include <iostream>							//Definitely need
-#include <vector>							//Might use this lib, not entirely sure yet
-#include <string>							//Realms have string values, so this is needed
-#include <set>								//Used for finding the Increasing Order of Set
+#include <iostream>								//Definitely need
+#include <vector>								//Might use this lib, not entirely sure yet
+#include <string>								//Realms have string values, so this is needed
+#include <set>									//Used for finding the Increasing Order of Set
 
 using namespace std;
 
@@ -9,8 +9,8 @@ using namespace std;
 
 struct Vertex {
 	string value;
-	int *powers;							//Holds the set of magi
-	//int *sub;  							//largest subset of increasing numbers
+	int *powers;								//Holds the set of magi
+	//int *sub;  								//largest subset of increasing numbers
 };
 
 //Class structure of Graph
@@ -23,10 +23,10 @@ public:
 	Graph(int size);
 	~Graph();
 	void addRealm(int src, string val, int pows[]);
-	int min(int a, int b);
-	int diff(char a, char b);
-	void minChanges(string str1, string str2);	//edit distance
-	void checkSubset(int* array);
+	int min(int a, int b);						//edit distance
+	int diff(char a, char b);					//edit distance
+	int minChanges(string str1, string str2);	//edit distance
+	void checkSubset(int* array);				
 	void addEdge();
 	void Dijkstras();
 };
@@ -34,11 +34,9 @@ public:
 Graph::Graph(int size){
 	//Setting up Graph Data Structure
 	realms = new Vertex[size];
-
 }
 
 Graph::~Graph(){
-	//Destruct the Structure
 	delete realms;
 }
 
@@ -80,6 +78,21 @@ int Graph::minChanges(string str1, string str2) {
   
   //minimum number of changes need to go from str1 to str2
   return table[s1][s2];
+}
+
+void Graph::checkSubset(int* array) {
+	/*
+		minChanges = minimum # changes needed to go from one Real's string to another's
+
+		if(minChanges > largestSubset[Realm])
+			cant move to this Realm
+		else if (minChanges <= largestSubset[Realm])
+			can move to this Realm
+	*/
+
+	// We want to check if we can go straight from start to destination,
+	// (start's minChanges to go form itself to desitantion MUST be <= largestSubset)
+	// if not, then we go check if possible to go to other realms
 }
 
 
