@@ -86,6 +86,10 @@ int Graph::minChanges(string str1, string str2) {
 }
 
 void Graph::checkSubset(int* array) {
+	// We want to check if we can go straight from start to destination(this would be shortest path),
+	// (start's minChanges to go form itself to desitantion's string MUST be <= largestSubset)
+	// if not, then we go check if possible to go to all other realms
+
 	/*
 		minChanges = minimum # changes needed to go from one Real's string to another's
 
@@ -94,15 +98,12 @@ void Graph::checkSubset(int* array) {
 		else if (minChanges <= largestSubset[Realm])
 			can move to this Realm
 	*/
-
-	// We want to check if we can go straight from start to destination,
-	// (start's minChanges to go form itself to desitantion MUST be <= largestSubset)
-	// if not, then we go check if possible to go to other realms
 }
 
 
 void Graph::Dijkstras(){
 //Implementing Dijkstras Algorithm
+<<<<<<< HEAD
 //Got the algorithm from the internet need to change, when Edit Distance is done
 //Have to get the Edges from all of the Vertices on the Graph
 	// int n = adj.size();
@@ -126,6 +127,32 @@ void Graph::Dijkstras(){
 	// 	}
 
 	// 	vis[cur] = true;
+=======
+//Got the algorithm from the internet need to change
+//when Edit Distance is done have to get the Edges
+//from all of the Vertices on the Graph
+	int n = adj.size();
+	vector<int> dist(n);
+	vector<bool> vis(n);
+
+	for(int i = 0; i < n; ++i) {
+		dist[i] = INFINITY;
+	}
+	dist[src] = 0;
+
+	for(int i = 0; i < n; ++i) {
+		int cur = -1;
+		for(int j = 0; j < n; ++j) {
+			if (vis[j]) {
+		  		continue;
+			}
+			if (cur == -1 || dist[j] < dist[cur]) {
+				cur = j;
+			}
+		}
+
+		vis[cur] = true;
+>>>>>>> 82fa7475d259d0c9722a5ba11778b58c3a3847d6
 		
 	// 	for(int j = 0; j < n; ++j) {
 	// 		int path = dist[cur] + adj[cur][j];
