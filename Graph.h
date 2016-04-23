@@ -22,6 +22,7 @@ private:
 public:
 	Graph(int size);
 	~Graph();
+	string getRealmVal(int index);
 	void addRealm(int src, string val, int pows[]);
 	int min(int a, int b);						//edit distance
 	int diff(char a, char b);					//edit distance
@@ -38,6 +39,10 @@ Graph::Graph(int size){
 
 Graph::~Graph(){
 	delete realms;
+}
+
+string Graph::getRealmVal(int index){
+	return realms[index].value;
 }
 
 void Graph::addRealm(int src, string val, int pows[]){
@@ -100,37 +105,37 @@ void Graph::Dijkstras(){
 //Implementing Dijkstras Algorithm
 //Got the algorithm from the internet need to change, when Edit Distance is done
 //Have to get the Edges from all of the Vertices on the Graph
-	int n = adj.size();
-	vector<int> dist(n);
-	vector<bool> vis(n);
+	// int n = adj.size();
+	// vector<int> dist(n);
+	// vector<bool> vis(n);
 
-	for(int i = 0; i < n; ++i) {
-		dist[i] = INFINITY;
-	}
-	dist[src] = 0;
+	// for(int i = 0; i < n; ++i) {
+	// 	dist[i] = INFINITY;
+	// }
+	// dist[src] = 0;
 
-	for(int i = 0; i < n; ++i) {
-		int cur = -1;
-		for(int j = 0; j < n; ++j) {
-			if (vis[j]) {
-		  		continue;
-			}
-			if (cur == -1 || dist[j] < dist[cur]) {
-				cur = j;
-			}
-		}
+	// for(int i = 0; i < n; ++i) {
+	// 	int cur = -1;
+	// 	for(int j = 0; j < n; ++j) {
+	// 		if (vis[j]) {
+	// 	  		continue;
+	// 		}
+	// 		if (cur == -1 || dist[j] < dist[cur]) {
+	// 			cur = j;
+	// 		}
+	// 	}
 
-		vis[cur] = true;
+	// 	vis[cur] = true;
 		
-		for(int j = 0; j < n; ++j) {
-			int path = dist[cur] + adj[cur][j];
-			if (path < dist[j]) {
-				dist[j] = path;
-			}
-		}
-	}
+	// 	for(int j = 0; j < n; ++j) {
+	// 		int path = dist[cur] + adj[cur][j];
+	// 		if (path < dist[j]) {
+	// 			dist[j] = path;
+	// 		}
+	// 	}
+	// }
 
-	return dist[dest];
+	// return dist[dest];
 }
 
 
