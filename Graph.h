@@ -81,6 +81,10 @@ int Graph::minChanges(string str1, string str2) {
 }
 
 void Graph::checkSubset(int* array) {
+	// We want to check if we can go straight from start to destination(this would be shortest path),
+	// (start's minChanges to go form itself to desitantion's string MUST be <= largestSubset)
+	// if not, then we go check if possible to go to all other realms
+
 	/*
 		minChanges = minimum # changes needed to go from one Real's string to another's
 
@@ -89,17 +93,14 @@ void Graph::checkSubset(int* array) {
 		else if (minChanges <= largestSubset[Realm])
 			can move to this Realm
 	*/
-
-	// We want to check if we can go straight from start to destination,
-	// (start's minChanges to go form itself to desitantion MUST be <= largestSubset)
-	// if not, then we go check if possible to go to other realms
 }
 
 
 void Graph::Dijkstras(){
 //Implementing Dijkstras Algorithm
-//Got the algorithm from the internet need to change, when Edit Distance is done
-//Have to get the Edges from all of the Vertices on the Graph
+//Got the algorithm from the internet need to change
+//when Edit Distance is done have to get the Edges
+//from all of the Vertices on the Graph
 	int n = adj.size();
 	vector<int> dist(n);
 	vector<bool> vis(n);
