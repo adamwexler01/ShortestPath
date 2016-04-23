@@ -1,6 +1,6 @@
-all: graph
+all: main
 
-graph: Graph.o
-	g++ Graph.o -o graph
-Graph.o: Graph.cpp
-	g++ -c Graph.cpp
+main: main.o
+	g++ main.o -o main
+main.o: main.cpp
+	g++ -c main.cpp
