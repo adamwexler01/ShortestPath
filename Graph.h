@@ -97,7 +97,40 @@ void Graph::checkSubset(int* array) {
 
 
 void Graph::Dijkstras(){
-	//Implementing Dijkstras Algorithm
+//Implementing Dijkstras Algorithm
+//Got the algorithm from the internet need to change, when Edit Distance is done
+//Have to get the Edges from all of the Vertices on the Graph
+	int n = adj.size();
+	vector<int> dist(n);
+	vector<bool> vis(n);
+
+	for(int i = 0; i < n; ++i) {
+		dist[i] = INFINITY;
+	}
+	dist[src] = 0;
+
+	for(int i = 0; i < n; ++i) {
+		int cur = -1;
+		for(int j = 0; j < n; ++j) {
+			if (vis[j]) {
+		  		continue;
+			}
+			if (cur == -1 || dist[j] < dist[cur]) {
+				cur = j;
+			}
+		}
+
+		vis[cur] = true;
+		
+		for(int j = 0; j < n; ++j) {
+			int path = dist[cur] + adj[cur][j];
+			if (path < dist[j]) {
+				dist[j] = path;
+			}
+		}
+	}
+
+	return dist[dest];
 }
 
 
