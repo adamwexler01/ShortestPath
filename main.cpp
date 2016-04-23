@@ -93,18 +93,28 @@ int main(int argc, const char * argv[]) {
  4
  sitting
  6
- 121324
+ 1 2 1 3 2 4
  knitting
  4
- 4231
+ 4 2 3 1
  knowing
  5
- 23142
+ 2 3 1 4 2
  kneeding
  4
- 1342
+ 1 3 4 2
  sitting
  kneeding
  
+ 4 florida
+ 7 4 3 2 1 2 3 4
+ flower
+ 4 5 6 7 8
+ collapse
+ 4 2 1 2 3
+ teamer
+ 3 4 5 6
+ teamer
+ florida
 */
 
