@@ -54,6 +54,7 @@ int Graph::diff(char a, char b) {
   return ((a == b) ? 0 : 1);
 }
 
+//Edit Distance Algorithm
 int Graph::minChanges(string str1, string str2) {
   int s1 = str1.length();
   int s2 = str2.length();
@@ -62,11 +63,11 @@ int Graph::minChanges(string str1, string str2) {
   int table[s1+1][s2+1];
  
   for (int i = 0; i < s1+1; i++) {        // 0 1 2 3 4 5
-    table[i][0] = i;                      // 1
-  }                                       // 2
-                                          // 3
-  for (int i = 1; i < s2+1; i++) {        // 4
-    table[0][i] = i;                      // 5
+    table[i][0] = i;                      // 1 - - - - -
+  }                                       // 2 - - - - -	table is dynamic according to charms' string
+                                          // 3 - - - - -	where a = answer
+  for (int i = 1; i < s2+1; i++) {        // 4 - - - - -
+    table[0][i] = i;                      // 5 - - - - a
   }
  
   for (int i = 1; i < s1+1; i++) {
