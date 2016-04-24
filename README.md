@@ -1,21 +1,21 @@
 ShortestPath
 
 INPUT:
- 4
- sitting
- 6
- 1 2 1 3 2 4
- knitting
- 4
- 4 2 3 1
- knowing
- 5
- 2 3 1 4 2
- kneeding
- 4
- 1 3 4 2
- sitting
- kneeding
+        4
+        sitting
+        6
+        1 2 1 3 2 4
+        knitting
+        4
+        4 2 3 1
+        knowing
+        5
+        2 3 1 4 2
+        kneeding
+        4
+        1 3 4 2
+        sitting
+        kneeding
  
 The first line is the number of Realms.
 We have created a graph with Realm # (int n) of vertices.
