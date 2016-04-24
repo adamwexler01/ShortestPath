@@ -13,13 +13,8 @@
 
 using namespace std;
 
-
-class Realm {
-private:
-  string charm;
-  int magiPowers;
-public:
-};
+//Removed the Class because it was not needed
+//Check the functions in the Graph.h file
 
 
 int main(int argc, const char * argv[]) {

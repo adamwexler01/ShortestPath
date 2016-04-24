@@ -41,6 +41,8 @@ Graph::~Graph(){
 	delete realms;
 }
 
+//Function used to have access to Private Variables
+//AKA getter method
 string Graph::getRealmVal(int index){
 	return realms[index].value;
 }
