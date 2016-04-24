@@ -56,9 +56,10 @@ and then the charm(string) for the destination Realm:
 
 
 **OUTPUT:**
-7 19
-5 13
 
+		7 19
+		5 13
+	
 The first line consists of two parts. This if for the path from start to end.
 Part 1 is the incantations(number of Magis' powers used).
 Part 2 is the minimum total powers used (total weights/costs used).
