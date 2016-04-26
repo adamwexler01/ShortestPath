@@ -47,9 +47,12 @@ public:
   ~Graph();
   string getRealmVal(int index);
   void addRealm(int i, string val, int pows[]);
-  int min(int a, int b);            //edit distance
-  int diff(char a, char b);         //edit distance
-  int minChanges(string str1, string str2); //edit distance
+  int min(int a, int b);                            //edit distance
+  int diff(char a, char b);                         //edit distance
+  int minChanges(string str1, string str2);         //edit distance
+  int largestSub(int arr[], int n, int *mx);        //subset
+  int lis(int arr[], int n);                        //subset
+  bool possible(int cost, int max);                 //is edge movement possible?
   void checkSubset(int* array);       
   void addEdge();
   void Dijkstras();
@@ -131,7 +134,6 @@ int Graph::minChanges(string str1, string str2) {
 
   //edit distance table to compute minimum # of changes
   int table[s1+1][s2+1];
- 
   for (int i = 0; i < s1+1; i++) {        // 0 1 2 3 4 5
     table[i][0] = i;                      // 1 - - - - -
   }                                       // 2 - - - - -  table is dynamic according to charms' string
@@ -151,6 +153,39 @@ int Graph::minChanges(string str1, string str2) {
   cout << str1 << " " << str2 << " = " << table[s1][s2] << endl;
 
   return table[s1][s2];
+}
+
+int Graph::largestSub(int arr[], int n, int *mx) {
+    if (n == 1) return 1;         //base case
+ 
+    int res;
+    int maxLength = 1;
+
+    for (int i = 1; i < n; i++) {
+        res = largestSub(arr, i, mx);
+        if(arr[i-1] < arr[n-1] && res+1 > maxLength) {
+          maxLength = res + 1;
+        }
+    }
+ 
+  //Compare maxLength with max & update max if needed
+    if(*mx < maxLength) *mx = maxLength;
+ 
+  // Return length of LIS ending with arr[n-1]
+    return maxLength;
+}
+
+//call this function to find size of largest increasing subset
+int Graph::lis(int arr[], int n) {
+    int max = 1;
+    largestSub( arr, n, &max );
+    return max;
+}
+
+//return true if possible to go from vertex 1 to vertex 2 using edge
+//can change parameters from edge cost to vertex 1 and 2 instead, then get EDIT DISTANCE? depends
+bool Graph::possible(int cost, int max) {
+  return ((cost <= max) ? true : false);
 }
 
 void Graph::checkSubset(int* array) {
