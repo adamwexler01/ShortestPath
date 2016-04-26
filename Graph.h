@@ -27,6 +27,9 @@ public:
 	int min(int a, int b);						//edit distance
 	int diff(char a, char b);					//edit distance
 	int minChanges(string str1, string str2);	//edit distance
+	int largestSub(int arr[], int n, int *mx);	//subset
+	int lis(int arr[], int n);					//subset
+	bool possible(int cost, int max);			//is edge possible
 	void checkSubset(int* array);				
 	void addEdge();
 	void Dijkstras();
@@ -86,6 +89,37 @@ int Graph::minChanges(string str1, string str2) {
   
   //minimum number of changes need to go from str1 to str2
   return table[s1][s2];
+}
+
+int Graph::largestSub(int arr[], int n, int *mx) {
+    if (n == 1) return 1;					//base case
+ 
+    int res;
+    int maxLength = 1;
+
+    for (int i = 1; i < n; i++) {
+        res = largestSub(arr, i, mx);
+        if(arr[i-1] < arr[n-1] && res+1 > maxLength) {
+        	maxLength = res + 1;
+        }
+    }
+ 
+ 	//Compare maxLength with max & update max if needed
+    if(*mx < maxLength) *mx = maxLength;
+ 
+ 	// Return length of LIS ending with arr[n-1]
+    return maxLength;
+}
+
+//call this function to find size of largest increasing subset
+int Graph::lis(int arr[], int n) {
+    int max = 1;
+    largestSub( arr, n, &max );
+    return max;
+}
+
+bool Graph::possible(int cost, int max) {
+	return (cost <= max ? true : false);
 }
 
 void Graph::checkSubset(int* array) {
