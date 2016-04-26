@@ -14,41 +14,41 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
   
-	string charmStart, charmDest;
-	int n;
-	Graph *graph;
+  string charmStart, charmDest;
+  int n;
+  Graph *graph;
 
-	//	Read number of realms and creating Graph
-	cin >> n;
-	graph = new Graph(n);
+  //  Read number of realms and creating Graph
+  cin >> n;
+  graph = new Graph(n);
 
-	for (int i = 0; i < n; i++) {
-		string charm;
-		int magiCount;
+  for (int i = 0; i < n; i++) {
+    string charm;
+    int magiCount;
 
-		//	Read charm and count
-		cin >> charm;
-		cin >> magiCount;
+    //  Read charm and count
+    cin >> charm;
+    cin >> magiCount;
 
-		//	Read power for each magi
-		int magiPowers[magiCount];
+    //  Read power for each magi
+    int magiPowers[magiCount];
 
-		for (int j = 0; j < magiCount; j++) {
-			cin >> magiPowers[j];
-		}
+    for (int j = 0; j < magiCount; j++) {
+      cin >> magiPowers[j];
+    }
 
-		//	Begin adding individual realms(vertices)
-		graph->addRealm(i, charm, magiPowers);
-	}
+    //  Begin adding individual realms(vertices)
+    graph->addRealm(i, charm, magiPowers);
+  }
   
   // Generate all edges
   graph->generateEdges();
   
   
 
-	// Read start and destination charms
-	cin >> charmStart;
-	cin >> charmDest;
+  // Read start and destination charms
+  cin >> charmStart;
+  cin >> charmDest;
 
   
   Vertex *source = graph->vertexNamed(charmStart);
@@ -63,7 +63,7 @@ int main(int argc, const char * argv[]) {
   
 
   
-	return 0;
+  return 0;
 }
 
 
@@ -86,7 +86,6 @@ int main(int argc, const char * argv[]) {
  kneeding
  
  */
-
 
 
 
