@@ -1,58 +1,117 @@
-#include <iostream>								//Definitely need
-#include <vector>								//Might use this lib, not entirely sure yet
-#include <string>								//Realms have string values, so this is needed
-#include <set>									//Used for finding the Increasing Order of Set
+#include <iostream>               //Definitely need
+#include <vector>               //Might use this lib, not entirely sure yet
+#include <string>               //Realms have string values, so this is needed
+#include <set>                  //Used for finding the Increasing Order of Set
+
+
 
 using namespace std;
 
 //Creating the Directed Graph Structure
 
-struct Vertex {
-	string value;
-	int *powers;								//Holds the set of magi
-	//int *sub;  								//largest subset of increasing numbers
+struct Vertex;
+
+struct Edge {
+  Vertex *destination;
+  int weight;
 };
+
+struct Vertex {
+  string value;
+  int *powers;                //Holds the set of magi
+  Edge *edges;
+  
+  public:
+  friend bool operator== (const Vertex &v1, const Vertex &v2);
+  friend bool operator!= (const Vertex &v1, const Vertex &v2);
+};
+
+bool operator== (const Vertex &v1, const Vertex &v2) {
+  return v1.value == v2.value;
+}
+
+bool operator!= (Vertex &v1, Vertex &v2) {
+  return v1.value != v2.value;
+}
+
 
 //Class structure of Graph
 
 class Graph{
 private:
-	Vertex *realms;
+  Vertex **realms;
+  int realmsCount;
 
 public:
-	Graph(int size);
-	~Graph();
-	string getRealmVal(int index);
-	void addRealm(int src, string val, int pows[]);
-	int min(int a, int b);						//edit distance
-	int diff(char a, char b);					//edit distance
-	int minChanges(string str1, string str2);	//edit distance
-	int largestSub(int arr[], int n, int *mx);	//subset
-	int lis(int arr[], int n);					//subset
-	bool possible(int cost, int max);			//is edge possible
-	void checkSubset(int* array);				
-	void addEdge();
-	void Dijkstras();
+  Graph(int size);
+  ~Graph();
+  string getRealmVal(int index);
+  void addRealm(int i, string val, int pows[]);
+  int min(int a, int b);            //edit distance
+  int diff(char a, char b);         //edit distance
+  int minChanges(string str1, string str2); //edit distance
+  void checkSubset(int* array);       
+  void addEdge();
+  void Dijkstras();
+  void generateEdges();
+  Vertex *vertexNamed(string name);
 };
 
+// Find realm by name
+Vertex *Graph::vertexNamed(string name) {
+  for (int i = 0; i < realmsCount; i++) {
+    if (realms[i]->value == name) {
+      return realms[i];
+    }
+  }
+  return nullptr;
+}
+
+
+// Generates all edges between all vertices
+void Graph::generateEdges() {
+  if (realmsCount < 1) {
+    return;
+  }
+  
+  for (int i = 0; i < realmsCount; i++) {
+    realms[i]->edges = new Edge[realmsCount - 1];
+    int k = 0;
+
+    for (int j = 0; j < realmsCount; j++) {
+      
+      if (realms[i] != realms[j]) {
+        Edge edge = Edge();
+        edge.destination = realms[j];
+        edge.weight = minChanges(realms[i]->value, realms[j]->value);
+        realms[i]->edges[k] = edge;
+        k++;
+      }
+    }
+  }
+}
+
 Graph::Graph(int size){
-	//Setting up Graph Data Structure
-	realms = new Vertex[size];
+  //Setting up Graph Data Structure
+  this->realmsCount = size;
+  realms = new Vertex*[size];
 }
 
 Graph::~Graph(){
-	delete realms;
+  delete realms;
 }
 
 //Function used to have access to Private Variables
 //AKA getter method
 string Graph::getRealmVal(int index){
-	return realms[index].value;
+  return realms[index]->value;
 }
 
-void Graph::addRealm(int src, string val, int pows[]){
-	realms[src].value = val;
-	realms[src].powers = pows;
+void Graph::addRealm(int i, string val, int pows[]){
+  Vertex *realm = new Vertex();
+  realm->value = val;
+  realm->powers = pows;
+  realms[i] = realm;
 }
 
 int Graph::min(int a,int b) {
@@ -66,6 +125,7 @@ int Graph::diff(char a, char b) {
 
 //Edit Distance Algorithm
 int Graph::minChanges(string str1, string str2) {
+  
   int s1 = str1.length();
   int s2 = str2.length();
 
@@ -74,8 +134,8 @@ int Graph::minChanges(string str1, string str2) {
  
   for (int i = 0; i < s1+1; i++) {        // 0 1 2 3 4 5
     table[i][0] = i;                      // 1 - - - - -
-  }                                       // 2 - - - - -	table is dynamic according to charms' string
-                                          // 3 - - - - -	where a = answer
+  }                                       // 2 - - - - -  table is dynamic according to charms' string
+                                          // 3 - - - - -  where a = answer
   for (int i = 1; i < s2+1; i++) {        // 4 - - - - -
     table[0][i] = i;                      // 5 - - - - a
   }
@@ -88,53 +148,23 @@ int Graph::minChanges(string str1, string str2) {
   }
   
   //minimum number of changes need to go from str1 to str2
+  cout << str1 << " " << str2 << " = " << table[s1][s2] << endl;
+
   return table[s1][s2];
 }
 
-int Graph::largestSub(int arr[], int n, int *mx) {
-    if (n == 1) return 1;					//base case
- 
-    int res;
-    int maxLength = 1;
-
-    for (int i = 1; i < n; i++) {
-        res = largestSub(arr, i, mx);
-        if(arr[i-1] < arr[n-1] && res+1 > maxLength) {
-        	maxLength = res + 1;
-        }
-    }
- 
- 	//Compare maxLength with max & update max if needed
-    if(*mx < maxLength) *mx = maxLength;
- 
- 	// Return length of LIS ending with arr[n-1]
-    return maxLength;
-}
-
-//call this function to find size of largest increasing subset
-int Graph::lis(int arr[], int n) {
-    int max = 1;
-    largestSub( arr, n, &max );
-    return max;
-}
-
-bool Graph::possible(int cost, int max) {
-	return ((cost <= max) ? true : false);
-}
-
 void Graph::checkSubset(int* array) {
-	// We want to check if we can go straight from start to destination(this would be shortest path),
-	// (start's minChanges to go form itself to desitantion's string MUST be <= largestSubset)
-	// if not, then we go check if possible to go to all other realms
+  // We want to check if we can go straight from start to destination(this would be shortest path),
+  // (start's minChanges to go form itself to desitantion's string MUST be <= largestSubset)
+  // if not, then we go check if possible to go to all other realms
 
-	/*
-		minChanges = minimum # changes needed to go from one Real's string to another's
-
-		if(minChanges > largestSubset[Realm])
-			cant move to this Realm
-		else if (minChanges <= largestSubset[Realm])
-			can move to this Realm
-	*/
+  /*
+    minChanges = minimum # changes needed to go from one Real's string to another's
+    if(minChanges > largestSubset[Realm])
+      cant move to this Realm
+    else if (minChanges <= largestSubset[Realm])
+      can move to this Realm
+  */
 }
 
 
@@ -142,49 +172,39 @@ void Graph::Dijkstras(){
 //Implementing Dijkstras Algorithm
 //Got the algorithm from the internet need to change, when Edit Distance is done
 //Have to get the Edges from all of the Vertices on the Graph
-	// int n = adj.size();
-	// vector<int> dist(n);
-	// vector<bool> vis(n);
+  // int n = adj.size();
+  // vector<int> dist(n);
+  // vector<bool> vis(n);
 
-	// for(int i = 0; i < n; ++i) {
-	// 	dist[i] = INFINITY;
-	// }
-	// dist[src] = 0;
+  // for(int i = 0; i < n; ++i) {
+  //  dist[i] = INFINITY;
+  // }
+  // dist[src] = 0;
 
-	// for(int i = 0; i < n; ++i) {
-	// 	int cur = -1;
-	// 	for(int j = 0; j < n; ++j) {
-	// 		if (vis[j]) {
-	// 	  		continue;
-	// 		}
-	// 		if (cur == -1 || dist[j] < dist[cur]) {
-	// 			cur = j;
-	// 		}
-	// 	}
+  // for(int i = 0; i < n; ++i) {
+  //  int cur = -1;
+  //  for(int j = 0; j < n; ++j) {
+  //    if (vis[j]) {
+  //        continue;
+  //    }
+  //    if (cur == -1 || dist[j] < dist[cur]) {
+  //      cur = j;
+  //    }
+  //  }
 
-	// 	vis[cur] = true;
-		
-	// 	for(int j = 0; j < n; ++j) {
-	// 		int path = dist[cur] + adj[cur][j];
-	// 		if (path < dist[j]) {
-	// 			dist[j] = path;
-	// 		}
-	// 	}
-	// }
+  //  vis[cur] = true;
+    
+  //  for(int j = 0; j < n; ++j) {
+  //    int path = dist[cur] + adj[cur][j];
+  //    if (path < dist[j]) {
+  //      dist[j] = path;
+  //    }
+  //  }
+  // }
 
-	// return dist[dest];
+  // return dist[dest];
 }
 
-
-
-
-//Might not be used because Edit Distance covers that
-//
-// struct Edge{
-// 	Vertex *source;
-// 	Vertex *destination;
-// 	int weight;
-// };
 
 
 

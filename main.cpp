@@ -5,60 +5,66 @@
 //  Created by Ian MacCallum on 4/17/16.
 //  Copyright © 2016 Ian MacCallum. All rights reserved.
 //
-
 #include <iostream>
 #include <vector>
 #include <string>
 #include "Graph.h"
 
-
 using namespace std;
-
-
-class Realm {
-private:
-  string charm;
-  int magiPowers;
-public:
-};
-
 
 int main(int argc, const char * argv[]) {
   
-  string charmStart, charmDest;
-  int n;
-  
-  // Read number of realms and creating Graph
-  cin >> n;
-  Graph* graph = new Graph(n);
-  
-  for (int i = 0; i < n; i++) {
-    string charm;
-    int magiCount;
-    
-    // Read charm and count
-    cin >> charm;
-    cin >> magiCount;
-    
-    // Read power for each magi
-    int magiPowers[magiCount];
+	string charmStart, charmDest;
+	int n;
+	Graph *graph;
 
-    for (int j = 0; j < magiCount; j++) {
-      cin >> magiPowers[j];
-    }
+	//	Read number of realms and creating Graph
+	cin >> n;
+	graph = new Graph(n);
 
-    //Begin adding individual realms(vertices)
-    graph->addRealm(i, charm, magiPowers);
+	for (int i = 0; i < n; i++) {
+		string charm;
+		int magiCount;
+
+		//	Read charm and count
+		cin >> charm;
+		cin >> magiCount;
+
+		//	Read power for each magi
+		int magiPowers[magiCount];
+
+		for (int j = 0; j < magiCount; j++) {
+			cin >> magiPowers[j];
+		}
+
+		//	Begin adding individual realms(vertices)
+		graph->addRealm(i, charm, magiPowers);
+	}
+  
+  // Generate all edges
+  graph->generateEdges();
+  
+  
+
+	// Read start and destination charms
+	cin >> charmStart;
+	cin >> charmDest;
+
+  
+  Vertex *source = graph->vertexNamed(charmStart);
+  Vertex *destination = graph->vertexNamed(charmDest);
+  
+  
+  cout << "source = " << source->value << endl << "destination = " << destination->value << endl;
+  for (int i = 0; i < n - 1; i++) {
+    cout << "Edge: " << source->edges[i].destination->value << endl;
+    
   }
   
-  // Read start and destination charms
-  cin >> charmStart;
-  cin >> charmDest;
+
   
-  return 0;
+	return 0;
 }
-
-
 
 
 
@@ -79,16 +85,8 @@ int main(int argc, const char * argv[]) {
  sitting
  kneeding
  
- 4
- florida
- 7 4 3 2 1 2 3 4
- flower
- 4 5 6 7 8
- collapse
- 4 2 1 2 3
- teamer
- 3 4 5 6
- teamer
- florida
-*/
+ */
+
+
+
 
