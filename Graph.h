@@ -119,7 +119,7 @@ int Graph::lis(int arr[], int n) {
 }
 
 bool Graph::possible(int cost, int max) {
-	return (cost <= max ? true : false);
+	return ((cost <= max) ? true : false);
 }
 
 void Graph::checkSubset(int* array) {
