@@ -1,14 +1,12 @@
-#include <iostream>               //Definitely need
+#include <iostream>             //Definitely need
 #include <vector>               //Might use this lib, not entirely sure yet
 #include <string>               //Realms have string values, so this is needed
+#include <array>
 #include <set>                  //Used for finding the Increasing Order of Set
-
-
 
 using namespace std;
 
 //Creating the Directed Graph Structure
-
 struct Vertex;
 
 struct Edge {
@@ -18,6 +16,7 @@ struct Edge {
 
 struct Vertex {
   string value;
+  int magi;
   int *powers;                //Holds the set of magi
   Edge *edges;
   
@@ -36,7 +35,6 @@ bool operator!= (Vertex &v1, Vertex &v2) {
 
 
 //Class structure of Graph
-
 class Graph{
 private:
   Vertex **realms;
@@ -45,20 +43,30 @@ private:
 public:
   Graph(int size);
   ~Graph();
+  Vertex *vertexNamed(string name);
+  void generateEdges();
   string getRealmVal(int index);
-  void addRealm(int i, string val, int pows[]);
+  int getEdgeWeight(Vertex* source, Vertex* dest);
+  void addRealm(int i, string val, int pows[], int magi);
   int min(int a, int b);                            //edit distance
   int diff(char a, char b);                         //edit distance
   int minChanges(string str1, string str2);         //edit distance
-  int largestSub(int arr[], int n, int *mx);        //subset
-  int lis(int arr[], int n);                        //subset
-  bool possible(int cost, int max);                 //is edge movement possible?
+  int largestSub(int powers[], int n, int *mx);     //subset
+  int LIS(int powers[], int n);                     //subset
+  bool possible(Vertex* source, Vertex* dest);       //is edge movement possible?
   void checkSubset(int* array);       
-  void addEdge();
   void Dijkstras();
-  void generateEdges();
-  Vertex *vertexNamed(string name);
 };
+
+Graph::Graph(int size) {
+  //Setting up Graph Data Structure
+  this->realmsCount = size;
+  realms = new Vertex*[size];
+}
+
+Graph::~Graph() {
+  delete realms;
+}
 
 // Find realm by name
 Vertex *Graph::vertexNamed(string name) {
@@ -94,26 +102,26 @@ void Graph::generateEdges() {
   }
 }
 
-Graph::Graph(int size){
-  //Setting up Graph Data Structure
-  this->realmsCount = size;
-  realms = new Vertex*[size];
-}
-
-Graph::~Graph(){
-  delete realms;
-}
-
 //Function used to have access to Private Variables
 //AKA getter method
-string Graph::getRealmVal(int index){
+string Graph::getRealmVal(int index) {
   return realms[index]->value;
 }
 
-void Graph::addRealm(int i, string val, int pows[]){
+int Graph::getEdgeWeight(Vertex* source, Vertex* dest) {
+  for (int i = 0; i < realmsCount - 1; i++) {
+    if(source->edges[i].destination->value == dest->value) {
+      return source->edges[i].weight;
+    } 
+  }
+  return 0;
+}
+
+void Graph::addRealm(int i, string val, int pows[], int magis) {
   Vertex *realm = new Vertex();
   realm->value = val;
   realm->powers = pows;
+  realm->magi = magis;
   realms[i] = realm;
 }
 
@@ -128,7 +136,6 @@ int Graph::diff(char a, char b) {
 
 //Edit Distance Algorithm
 int Graph::minChanges(string str1, string str2) {
-  
   int s1 = str1.length();
   int s2 = str2.length();
 
@@ -151,19 +158,18 @@ int Graph::minChanges(string str1, string str2) {
   
   //minimum number of changes need to go from str1 to str2
   cout << str1 << " " << str2 << " = " << table[s1][s2] << endl;
-
   return table[s1][s2];
 }
 
-int Graph::largestSub(int arr[], int n, int *mx) {
+int Graph::largestSub(int powers[], int n, int *mx) {
     if (n == 1) return 1;         //base case
  
     int res;
     int maxLength = 1;
 
     for (int i = 1; i < n; i++) {
-        res = largestSub(arr, i, mx);
-        if(arr[i-1] < arr[n-1] && res+1 > maxLength) {
+        res = largestSub(powers, i, mx);
+        if(powers[i-1] < powers[n-1] && res+1 > maxLength) {
           maxLength = res + 1;
         }
     }
@@ -171,21 +177,23 @@ int Graph::largestSub(int arr[], int n, int *mx) {
   //Compare maxLength with max & update max if needed
     if(*mx < maxLength) *mx = maxLength;
  
-  // Return length of LIS ending with arr[n-1]
+  // Return length of LIS ending with powers[n-1]
     return maxLength;
 }
 
 //call this function to find size of largest increasing subset
-int Graph::lis(int arr[], int n) {
+int Graph::LIS(int powers[], int n) {
     int max = 1;
-    largestSub( arr, n, &max );
+    largestSub(powers, n, &max);
     return max;
 }
 
-//return true if possible to go from vertex 1 to vertex 2 using edge
-//can change parameters from edge cost to vertex 1 and 2 instead, then get EDIT DISTANCE? depends
-bool Graph::possible(int cost, int max) {
-  return ((cost <= max) ? true : false);
+//return true if possible to go from vertex 1 to vertex 2
+bool Graph::possible(Vertex *source, Vertex *dest) {
+  int temp = getEdgeWeight(source, dest);
+  int n = source->magi;
+
+  return ((temp <= LIS(source->powers, n)) ? true : false);
 }
 
 void Graph::checkSubset(int* array) {
@@ -203,7 +211,7 @@ void Graph::checkSubset(int* array) {
 }
 
 
-void Graph::Dijkstras(){
+void Graph::Dijkstras() {
 //Implementing Dijkstras Algorithm
 //Got the algorithm from the internet need to change, when Edit Distance is done
 //Have to get the Edges from all of the Vertices on the Graph
