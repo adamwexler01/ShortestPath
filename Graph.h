@@ -3,6 +3,7 @@
 #include <string>               //Realms have string values, so this is needed
 #include <set>                  //Used for finding the Increasing Order of Set
 #include <cmath>
+#include <climits>
 
 using namespace std;
 
@@ -16,6 +17,8 @@ struct Edge {
 
 struct Vertex {
   string value;
+  bool vis;
+  int cost;
   int magi;
   int *powers;                //Holds the set of magi
   Edge *edges;
@@ -122,6 +125,7 @@ void Graph::addRealm(int i, string val, int pows[], int magis) {
   realm->value = val;
   realm->powers = pows;
   realm->magi = magis;
+  realm->vis = false;
   realms[i] = realm;
 }
 
@@ -202,40 +206,21 @@ bool Graph::possible(Vertex *source, Vertex *dest) {
 
 
 void Graph::Dijkstras(Vertex *source, Vertex *destination) {
-    int n = realmsCount;
 
-    for(int i=0; i < n; i++){
-        cout << "Source: " << source->value << endl;
-        Vertex *nextNode = vertexNamed(realms[i]->value);
-        cout << nextNode->value << endl;
+    int size = realmsCount;
 
-
-
-        if(possible(source, nextNode)){
-            //Perform Dijkstra's
-            cout << "We made it" << endl;
-
-
-
-
-
-
-        }
-
-
-
+    for(int i=0; i < size; i++){
+        realms[i]->cost = INT_MAX;
+        cout << "Cost of Vertix: " << realms[i]->value << " " << realms[i]->cost << endl;
     }
 
+    source->cost = 0;
 
-
-
-
-
+    for(int i=0; i < size; i++){
+        cout << "Cost of Vertix: " << realms[i]->value << " " << realms[i]->cost << endl;
+    }
 
 }
-
-
-
 
 
 
@@ -279,7 +264,6 @@ void Graph::Dijkstras(Vertex *source, Vertex *destination) {
 
     return dist[dest];
 } 
-
 
 */
 

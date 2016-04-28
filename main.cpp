@@ -53,6 +53,9 @@ int main(int argc, const char * argv[]) {
   
   cout << "source = " << source->value << endl << "destination = " << destination->value << endl;
 
+  // if(graph->possible(source, graph->vertexNamed("knowing")) == true) cout << "possible" << endl;
+  // else cout << "not possible" << endl;
+
   graph->Dijkstras(source, destination);
 
 
