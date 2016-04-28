@@ -207,17 +207,24 @@ bool Graph::possible(Vertex *source, Vertex *dest) {
 
 void Graph::Dijkstras(Vertex *source, Vertex *destination) {
 
+    //int size = realmsCount;
+    // for(int i=0; i < size; i++){
+    //     realms[i]->cost = INT_MAX;
+    //     cout << "Cost of Vertix: " << realms[i]->value << " " << realms[i]->cost << endl;
+    // }
+
+    // source->cost = 0;
+
+    // for(int i=0; i < size; i++){
+    //     cout << "Cost of Vertix: " << realms[i]->value << " " << realms[i]->cost << endl;
+    // }
+
     int size = realmsCount;
+    vector<int> dist(size);
+    vector<bool> vis(size);
 
-    for(int i=0; i < size; i++){
-        realms[i]->cost = INT_MAX;
-        cout << "Cost of Vertix: " << realms[i]->value << " " << realms[i]->cost << endl;
-    }
-
-    source->cost = 0;
-
-    for(int i=0; i < size; i++){
-        cout << "Cost of Vertix: " << realms[i]->value << " " << realms[i]->cost << endl;
+    for(int i = 0; i <= size; ++i) {
+        dist[i] = INFINITY;
     }
 
 }
