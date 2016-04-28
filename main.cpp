@@ -52,13 +52,20 @@ int main(int argc, const char * argv[]) {
   Vertex *destination = graph->vertexNamed(charmDest);
   
   cout << "source = " << source->value << endl << "destination = " << destination->value << endl;
-  for (int i = 0; i < n - 1; i++) {
-    cout << "Edge: " << source->edges[i].destination->value << " cost: " << source->edges[i].weight << endl;    
-  }
 
-  //checking of possible function works (it does) -- cant go straight from source to destination
-  if(graph->possible(source, destination) == true) cout << "possible" << endl;
-  else cout << "not possible" << endl;
+  graph->Dijkstras(source, destination);
+
+
+
+
+
+  // for (int i = 0; i < n - 1; i++) {
+  //   cout << "Edge: " << source->edges[i].destination->value << " cost: " << source->edges[i].weight << endl;    
+  // }
+
+  // //checking of possible function works (it does) -- cant go straight from source to destination
+  // if(graph->possible(source, destination) == true) cout << "possible" << endl;
+  // else cout << "not possible" << endl;
   
   return 0;
 }

@@ -1,8 +1,8 @@
 #include <iostream>             //Definitely need
 #include <vector>               //Might use this lib, not entirely sure yet
 #include <string>               //Realms have string values, so this is needed
-#include <array>
 #include <set>                  //Used for finding the Increasing Order of Set
+#include <cmath>
 
 using namespace std;
 
@@ -55,7 +55,7 @@ public:
   int LIS(int powers[], int n);                     //subset
   bool possible(Vertex* source, Vertex* dest);       //is edge movement possible?
   void checkSubset(int* array);       
-  void Dijkstras();
+  void Dijkstras(Vertex *source, Vertex *destination);
 };
 
 Graph::Graph(int size) {
@@ -75,7 +75,7 @@ Vertex *Graph::vertexNamed(string name) {
       return realms[i];
     }
   }
-  return nullptr;
+  return NULL;
 }
 
 
@@ -190,11 +190,98 @@ int Graph::LIS(int powers[], int n) {
 
 //return true if possible to go from vertex 1 to vertex 2
 bool Graph::possible(Vertex *source, Vertex *dest) {
-  int temp = getEdgeWeight(source, dest);
-  int n = source->magi;
+    if(source->value == dest->value){
+        return false;
+    }
 
-  return ((temp <= LIS(source->powers, n)) ? true : false);
+    int temp = getEdgeWeight(source, dest);
+    int n = source->magi;
+
+    return ((temp <= LIS(source->powers, n)) ? true : false);
 }
+
+
+void Graph::Dijkstras(Vertex *source, Vertex *destination) {
+    int n = realmsCount;
+
+    for(int i=0; i < n; i++){
+        cout << "Source: " << source->value << endl;
+        Vertex *nextNode = vertexNamed(realms[i]->value);
+        cout << nextNode->value << endl;
+
+
+
+        if(possible(source, nextNode)){
+            //Perform Dijkstra's
+            cout << "We made it" << endl;
+
+
+
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+/*
+
+// Implementing Dijkstras Algorithm
+// Got the algorithm from the internet need to change, when Edit Distance is done
+// Have to get the Edges from all of the Vertices on the Graph
+    int n = realmsCount;
+    vector<int> dist(n);
+    vector<bool> vis(n);
+
+    for(int i = 0; i < n; ++i) {
+        dist[i] = INFINITY;
+    }
+
+        dist[source] = 0;
+
+    for(int i = 0; i < n; ++i) {
+        int cur = -1;
+        for(int j = 0; j < n; ++j) {
+            if (vis[j]) {
+                continue;
+            }
+            
+            if (cur == -1 || dist[j] < dist[cur]) {
+                cur = j;
+            }
+        }
+
+        vis[cur] = true;
+
+        for(int j = 0; j < n; ++j) {
+        
+            int path = dist[cur] + adj[cur][j];
+            if (path < dist[j]) {
+                dist[j] = path;
+            }
+        }
+    }
+
+    return dist[dest];
+} 
+
+
+*/
 
 void Graph::checkSubset(int* array) {
   // We want to check if we can go straight from start to destination(this would be shortest path),
@@ -209,47 +296,6 @@ void Graph::checkSubset(int* array) {
       can move to this Realm
   */
 }
-
-
-void Graph::Dijkstras() {
-//Implementing Dijkstras Algorithm
-//Got the algorithm from the internet need to change, when Edit Distance is done
-//Have to get the Edges from all of the Vertices on the Graph
-  // int n = adj.size();
-  // vector<int> dist(n);
-  // vector<bool> vis(n);
-
-  // for(int i = 0; i < n; ++i) {
-  //  dist[i] = INFINITY;
-  // }
-  // dist[src] = 0;
-
-  // for(int i = 0; i < n; ++i) {
-  //  int cur = -1;
-  //  for(int j = 0; j < n; ++j) {
-  //    if (vis[j]) {
-  //        continue;
-  //    }
-  //    if (cur == -1 || dist[j] < dist[cur]) {
-  //      cur = j;
-  //    }
-  //  }
-
-  //  vis[cur] = true;
-    
-  //  for(int j = 0; j < n; ++j) {
-  //    int path = dist[cur] + adj[cur][j];
-  //    if (path < dist[j]) {
-  //      dist[j] = path;
-  //    }
-  //  }
-  // }
-
-  // return dist[dest];
-}
-
-
-
 
 
 
