@@ -1,214 +1,281 @@
-#include <iostream>								//Definitely need
-#include <vector>								//Might use this lib, not entirely sure yet
-#include <string>								//Realms have string values, so this is needed
-#include <set>									//Used for finding the Increasing Order of Set
-
-
+#include <iostream>             //Definitely need
+#include <vector>               //Might use this lib, not entirely sure yet
+#include <string>               //Realms have string values, so this is needed
+#include <set>                  //Used for finding the Increasing Order of Set
+#include <cmath>
+#include <climits>
+#include <list>
 
 using namespace std;
 
-//Creating the Directed Graph Structure
-
 struct Vertex;
 
+
+//Initializes the Edge Structure
 struct Edge {
- 	Vertex *destination;
- 	int weight;
+  Vertex *destination;
+  int weight;
 };
 
+
+//Constructs Vertex Structure
 struct Vertex {
-	string value;
-	int *powers;								//Holds the set of magi
-  Edge *edges;
+  int minDistance, minGems;
+  string value;
+  vector<int> powers;
+  vector<Edge> edges;
   
-  public:
   friend bool operator== (const Vertex &v1, const Vertex &v2);
   friend bool operator!= (const Vertex &v1, const Vertex &v2);
+  vector<int> checkSubset();
 };
 
+//Checks whether the Vertices are equal in value
 bool operator== (const Vertex &v1, const Vertex &v2) {
   return v1.value == v2.value;
 }
+
+//Checks whether Vertices are not equal
 
 bool operator!= (Vertex &v1, Vertex &v2) {
   return v1.value != v2.value;
 }
 
+//Finds the largest increasing subset of Magi
+vector<int> Vertex::checkSubset() {
+  
+  vector<vector<int>> results = vector<vector<int>>();
+  
+  int smallestIndex = INT_MAX;
+  
+  for (int i = 0; i < powers.size(); i++) {
+    
+    if (powers[i] < smallestIndex) {
+      
+      // Create new array
+      smallestIndex = powers[i];
+      vector<int> temp = { powers[i] };
+      results.push_back(temp);
+    } else if (powers[i] > smallestIndex) {
+      
+      // Add value to every array if its greater than the max index
+      
+      for(int j = 0; j < results.size(); j++) {
+        
+        if (powers[i] > results[j].back()) {
+          
+          results[j].push_back(powers[i]);
+        }
+      }
+    }
+  }
+  
+  
+  int maxIndex = -1;
+  int maxSize = 0;
+  int maxSum = INT_MAX;
+  
+  
+  for (int i = 0; i < results.size(); i++) {
+    
+    if (results[i].size() > maxSize) {
+      maxIndex = i;
+      maxSize = (int)results[i].size();
+    } else if (results[i].size() == maxSize) {
+      // Find lower gem count
+      
+      int tempSum = 0;
+      
+      for (int n : results[maxIndex]) tempSum += n;
+      
+      if (tempSum < maxSum) {
+        maxIndex = i;
+        maxSize = (int)results[i].size();
+        maxSum = tempSum;
+      }
+    }
+  }
+  
+  if (maxIndex == -1) {
+    return {};
+  } else {
+    return results[maxIndex];
+  }
+}
 
 //Class structure of Graph
-
 class Graph{
 private:
-	Vertex **realms;
+  vector<Vertex*> realms;
   int realmsCount;
-
+  
 public:
-	Graph(int size);
-	~Graph();
-	string getRealmVal(int index);
-	void addRealm(int i, string val, int pows[]);
-	int min(int a, int b);						//edit distance
-	int diff(char a, char b);					//edit distance
-	int minChanges(string str1, string str2);	//edit distance
-	void checkSubset(int* array);				
-	void addEdge();
-	void Dijkstras();
-  void generateEdges();
+  Graph(int size);                                                        //Constructor of the Graph Class
   Vertex *vertexNamed(string name);
+  void generateEdges();                                                   //Creates Edges of Graph
+  void resetRealms();                                                     //Used to flush Values stored in the Pointers
+  
+  string getRealmVal(int index);
+  void addRealm(int i, string val, vector<int> powers);                   //Helper to create the Graph Structure
+  int minChanges(string str1, string str2);                               //edit distance
+  void Dijkstras(Vertex *source, Vertex *destination);                    //Traversal function
+  
 };
+
+Graph::Graph(int size) {
+  //Setting up Graph Data Structure
+  this->realmsCount = size;
+  this->realms = vector<Vertex*>();
+}
 
 // Find realm by name
 Vertex *Graph::vertexNamed(string name) {
-  for (int i = 0; i < realmsCount; i++) {
-    if (realms[i]->value == name) {
-      return realms[i];
+  //Initializes an iterator to cycle through the vertices
+  vector<Vertex*>::iterator i;
+  for(i = realms.begin(); i < realms.end(); i++ ) {
+    if ((*i)->value == name) {
+      return *i;
     }
   }
-  return nullptr;
+  return NULL;
 }
 
 
 // Generates all edges between all vertices
 void Graph::generateEdges() {
+  //Checks if tranversal is possible
   if (realmsCount < 1) {
     return;
   }
   
   for (int i = 0; i < realmsCount; i++) {
-    realms[i]->edges = new Edge[realmsCount - 1];
+    
     int k = 0;
-
+    
     for (int j = 0; j < realmsCount; j++) {
+      //Gets the weight using edit distance algorithm
+      int weight = minChanges(realms[i]->value, realms[j]->value);
       
-      if (realms[i] != realms[j]) {
+      if (realms[i] != realms[j] && realms[i]->checkSubset().size() >= weight) {
         Edge edge = Edge();
         edge.destination = realms[j];
-        edge.weight = minChanges(realms[i]->value, realms[j]->value);
-        realms[i]->edges[k] = edge;
+        edge.weight = weight;
+        realms[i]->edges.push_back(edge);
         k++;
       }
     }
   }
 }
 
-Graph::Graph(int size){
-	//Setting up Graph Data Structure
-  this->realmsCount = size;
-	realms = new Vertex*[size];
-}
-
-Graph::~Graph(){
-	delete realms;
-}
-
-//Function used to have access to Private Variables
-//AKA getter method
-string Graph::getRealmVal(int index){
-	return realms[index]->value;
-}
-
-void Graph::addRealm(int i, string val, int pows[]){
+void Graph::addRealm(int i, string val, vector<int> powers) {
+  //Initializes the properties of the Realm
   Vertex *realm = new Vertex();
-	realm->value = val;
-	realm->powers = pows;
-  realms[i] = realm;
+  realm->edges = vector<Edge>();
+  realm->minDistance = INT_MAX;                                       //Uses INT_MAX to fix the possible paths for the traversal
+  realm->value = val;
+  realm->powers = powers;
+  realms.push_back(realm);
 }
 
-int Graph::min(int a,int b) {
-   return ((a < b) ? a : b);
+void Graph::resetRealms() {
+  
+  vector<Vertex*>::iterator i;  // declare an iterator to a vector of strings
+  for(i = realms.begin(); i < realms.end(); i++ ) {
+    Vertex *realm = *i;
+    realm->minDistance = INT_MAX;
+    realm->minGems = 0;
+  }
 }
 
-int Graph::diff(char a, char b) {
-  //if characters not same, return 1 to add to minimum # changes needed
-  return ((a == b) ? 0 : 1);
-}
 
 //Edit Distance Algorithm
 int Graph::minChanges(string str1, string str2) {
+  int s1 = (int)str1.length();
+  int s2 = (int)str2.length();
   
-  int s1 = str1.length();
-  int s2 = str2.length();
-
   //edit distance table to compute minimum # of changes
   int table[s1+1][s2+1];
- 
-  for (int i = 0; i < s1+1; i++) {        // 0 1 2 3 4 5
-    table[i][0] = i;                      // 1 - - - - -
-  }                                       // 2 - - - - -	table is dynamic according to charms' string
-                                          // 3 - - - - -	where a = answer
-  for (int i = 1; i < s2+1; i++) {        // 4 - - - - -
-    table[0][i] = i;                      // 5 - - - - a
+  for (int i = 0; i < s1+1; i++) {
+    table[i][0] = i;
   }
- 
+  
+  for (int i = 1; i < s2+1; i++) {
+    table[0][i] = i;
+  }
+  
   for (int i = 1; i < s1+1; i++) {
     for (int j = 1; j < s2+1; j++) {
       int less = min(table[i-1][j], table[i][j-1]) + 1;
-      table[i][j] = min(less, table[i-1][j-1] + diff(str1[i-1], str2[j-1]));
+      table[i][j] = min(less, table[i-1][j-1] + ((str1[i-1] == str2[j-1]) ? 0 : 1));
     }
   }
   
   //minimum number of changes need to go from str1 to str2
-  cout << str1 << " " << str2 << " = " << table[s1][s2] << endl;
-
   return table[s1][s2];
 }
 
-void Graph::checkSubset(int* array) {
-	// We want to check if we can go straight from start to destination(this would be shortest path),
-	// (start's minChanges to go form itself to desitantion's string MUST be <= largestSubset)
-	// if not, then we go check if possible to go to all other realms
-
-	/*
-		minChanges = minimum # changes needed to go from one Real's string to another's
-
-		if(minChanges > largestSubset[Realm])
-			cant move to this Realm
-		else if (minChanges <= largestSubset[Realm])
-			can move to this Realm
-	*/
+void Graph::Dijkstras(Vertex *source, Vertex *destination) {
+  
+  list<Vertex*> q = list<Vertex*>();
+  source->minDistance = 0;
+  source->minGems = 0;
+  q.push_back(source);
+  
+  while (!q.empty()) {
+    Vertex *currentVertex = q.front();
+    q.pop_front();
+    vector<int> subset = currentVertex->checkSubset();
+    int subsetSum = 0;
+    for (int n : subset) subsetSum += n;
+    
+    for (int i = 0; i < currentVertex->edges.size(); i++) {
+      
+      // Visit adjacent vertices
+      Edge edge = currentVertex->edges[i];
+      Vertex* adjacentVertex = edge.destination;
+      
+      if (subset.size() >= edge.weight) {
+        
+        if (currentVertex->minDistance + edge.weight < adjacentVertex->minDistance) {
+          
+          // Take path & update minDistance
+          adjacentVertex->minDistance = currentVertex->minDistance + edge.weight;
+          
+          adjacentVertex->minGems = currentVertex->minGems + subsetSum;
+          q.push_back(adjacentVertex);
+          
+        }
+      }
+    }
+  }
+  
+  if (destination->minDistance == INT_MAX) {
+    cout << "IMPOSSIBLE" << endl;
+  } else {
+    cout << destination->minDistance << " " << destination->minGems << endl;
+  }
+  
 }
 
 
-void Graph::Dijkstras(){
-//Implementing Dijkstras Algorithm
-//Got the algorithm from the internet need to change, when Edit Distance is done
-//Have to get the Edges from all of the Vertices on the Graph
-	// int n = adj.size();
-	// vector<int> dist(n);
-	// vector<bool> vis(n);
-
-	// for(int i = 0; i < n; ++i) {
-	// 	dist[i] = INFINITY;
-	// }
-	// dist[src] = 0;
-
-	// for(int i = 0; i < n; ++i) {
-	// 	int cur = -1;
-	// 	for(int j = 0; j < n; ++j) {
-	// 		if (vis[j]) {
-	// 	  		continue;
-	// 		}
-	// 		if (cur == -1 || dist[j] < dist[cur]) {
-	// 			cur = j;
-	// 		}
-	// 	}
-
-	// 	vis[cur] = true;
-		
-	// 	for(int j = 0; j < n; ++j) {
-	// 		int path = dist[cur] + adj[cur][j];
-	// 		if (path < dist[j]) {
-	// 			dist[j] = path;
-	// 		}
-	// 	}
-	// }
-
-	// return dist[dest];
-}
-
-
-
-
+/*
+ 4
+ sitting
+ 6
+ 1 2 1 3 2 4
+ knitting
+ 4
+ 4 2 3 1
+ knowing
+ 5
+ 2 3 1 4 2
+ kneeding
+ 4
+ 1 3 4 2
+ sitting
+ kneeding
+ 
+ */
 
 
 

@@ -14,56 +14,53 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
   
-	string charmStart, charmDest;
-	int n;
-	Graph *graph;
+  string charmStart, charmDest;
+  int n;
+  Graph *graph;
 
-	//	Read number of realms and creating Graph
-	cin >> n;
-	graph = new Graph(n);
+  //  Read number of realms and creating Graph
+  cin >> n;
+  graph = new Graph(n);
 
-	for (int i = 0; i < n; i++) {
-		string charm;
-		int magiCount;
+  for (int i = 0; i < n; i++) {
+    string charm;
+    int magiCount;
 
-		//	Read charm and count
-		cin >> charm;
-		cin >> magiCount;
+    //  Read charm and count
+    cin >> charm;
+    cin >> magiCount;
 
-		//	Read power for each magi
-		int magiPowers[magiCount];
+    //  Read power for each magi
+    vector<int> magiPowers;
 
-		for (int j = 0; j < magiCount; j++) {
-			cin >> magiPowers[j];
-		}
-
-		//	Begin adding individual realms(vertices)
-		graph->addRealm(i, charm, magiPowers);
-	}
+    for (int j = 0; j < magiCount; j++) {
+      int temp;
+      cin >> temp;
+      magiPowers.push_back(temp);
+    }
+    
+    // Add individual realms(vertices)
+    graph->addRealm(i, charm, magiPowers);
+  }
+  
+  // Read start and destination charms
+  cin >> charmStart;
+  cin >> charmDest;
   
   // Generate all edges
   graph->generateEdges();
-  
-  
 
-	// Read start and destination charms
-	cin >> charmStart;
-	cin >> charmDest;
 
-  
+  // Find source/destination realms
   Vertex *source = graph->vertexNamed(charmStart);
   Vertex *destination = graph->vertexNamed(charmDest);
-  
-  
-  cout << "source = " << source->value << endl << "destination = " << destination->value << endl;
-  for (int i = 0; i < n - 1; i++) {
-    cout << "Edge: " << source->edges[i].destination->value << endl;
-    
-  }
-  
 
+  // Perform traversal
+  graph->Dijkstras(source, destination);
+  graph->resetRealms();
+  graph->Dijkstras(destination, source);
   
-	return 0;
+  return 0;
 }
 
 
@@ -86,7 +83,6 @@ int main(int argc, const char * argv[]) {
  kneeding
  
  */
-
 
 
 
